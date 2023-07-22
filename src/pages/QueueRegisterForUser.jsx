@@ -381,7 +381,10 @@ const QueueRegisterForUser = () => {
 
   return (
     <div className="mb-[100px]">
-      <DashboardHeading linkTo="/login" />
+      <DashboardHeading
+        linkTo="/welcome"
+        heading="Layanan Mudah Pendaftaran & Antrian Pasien Puskesmas (LAMDARANPUS)"
+      />
       {showAlert && (
         <Alert color={errorAlert ? "failure" : "success"}>
           <span>
