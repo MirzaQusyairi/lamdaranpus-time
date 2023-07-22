@@ -1,0 +1,8 @@
+node_modules
+yarn.lock
+.env
+.pnp.cjs
+.pnp.loader.mjs
+.yarn
+supabase.js
+package-log.json
