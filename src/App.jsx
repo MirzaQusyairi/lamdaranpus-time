@@ -6,7 +6,6 @@ import Dashboard from "./pages/Dashboard";
 import Daftar from "./pages/Daftar";
 import LoginValidation from "./pages/LoginValidation";
 import SignUpValidation from "./pages/SignUpValidation";
-import ForgotPassword from "./pages/ForgotPassword";
 import AdditionalData from "./pages/AdditionalData";
 import QueueRegisterForUser from "./pages/QueueRegisterForUser";
 import QueueRegisterForOther from "./pages/QueueRegisterForOther";
@@ -37,8 +36,6 @@ function App() {
       <Route path="/admin-login" element={<AdminLogin />} />
 
       <Route path="/signup" element={<SignUpValidation />} />
-
-      <Route path="/forgot" element={<ForgotPassword />} />
 
       <Route path="/welcome" element={<WelcomePage />} />
 
