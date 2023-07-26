@@ -255,32 +255,32 @@ const QueueRegisterForOther = () => {
     };
 
     // dengan waktu real-time dimulai dari kurang dari jam 7 pagi
-      const currentTime = new Date();
-      const currentHour = currentTime.getHours();
-      const currentMinute = currentTime.getMinutes();
-      const currentFormattedTime = `${currentHour < 10 ? "0" + currentHour : currentHour
-        }.${currentMinute < 10 ? "0" + currentMinute : currentMinute}`;
+    //   const currentTime = new Date();
+    //   const currentHour = currentTime.getHours();
+    //   const currentMinute = currentTime.getMinutes();
+    //   const currentFormattedTime = `${currentHour < 10 ? "0" + currentHour : currentHour
+    //     }.${currentMinute < 10 ? "0" + currentMinute : currentMinute}`;
 
-      let availableSlots;
+    //   let availableSlots;
 
-      if (currentFormattedTime < "07.00") {
-        availableSlots = availableQueueNumbers.map((queueNumber) => timeSlots[queueNumber]);
-      } else {
-        availableSlots = availableQueueNumbers
-          .filter((queueNumber) => timeSlots[queueNumber] > currentFormattedTime)
-          .map((queueNumber) => timeSlots[queueNumber]);
-      }
+    //   if (currentFormattedTime < "07.00") {
+    //     availableSlots = availableQueueNumbers.map((queueNumber) => timeSlots[queueNumber]);
+    //   } else {
+    //     availableSlots = availableQueueNumbers
+    //       .filter((queueNumber) => timeSlots[queueNumber] > currentFormattedTime)
+    //       .map((queueNumber) => timeSlots[queueNumber]);
+    //   }
 
-      setAvailableTimeSlots(availableSlots);
-    }, [availableQueueNumbers]);
+    //   setAvailableTimeSlots(availableSlots);
+    // }, [availableQueueNumbers]);
 
     // tanpa waktu real time
-  //   const availableSlots = availableQueueNumbers.map(
-  //     (queueNumber) => timeSlots[queueNumber]
-  //   );
+    const availableSlots = availableQueueNumbers.map(
+      (queueNumber) => timeSlots[queueNumber]
+    );
 
-  //   setAvailableTimeSlots(availableSlots);
-  // }, [availableQueueNumbers]);
+    setAvailableTimeSlots(availableSlots);
+  }, [availableQueueNumbers]);
   useEffect(() => {
     switch (timeSlot) {
       case "08.00":
