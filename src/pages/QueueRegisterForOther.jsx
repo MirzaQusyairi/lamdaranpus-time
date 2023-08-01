@@ -254,7 +254,7 @@ const QueueRegisterForOther = () => {
       11: "11.20",
     };
 
-    // dengan waktu real-time dimulai dari kurang dari jam 7 pagi
+    // with current time constraint
     //   const currentTime = new Date();
     //   const currentHour = currentTime.getHours();
     //   const currentMinute = currentTime.getMinutes();
@@ -274,7 +274,7 @@ const QueueRegisterForOther = () => {
     //   setAvailableTimeSlots(availableSlots);
     // }, [availableQueueNumbers]);
 
-    // tanpa waktu real time
+    // without current time constraint
     const availableSlots = availableQueueNumbers.map(
       (queueNumber) => timeSlots[queueNumber]
     );
