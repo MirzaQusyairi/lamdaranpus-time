@@ -95,7 +95,7 @@ const AdditionalData = () => {
 
   return (
     <div>
-      <WelcomeDashboardHeading />
+      <WelcomeDashboardHeading heading={"Layanan Mudah Pendaftaran & Antrian Pasien Puskesmas (LAMDARANPUS)"}/>
       <Navigation currentPage={"Data Tambahan"} isConfirm />
 
       {

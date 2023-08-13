@@ -68,7 +68,7 @@ function OTPVerification() {
 
     return (
         <div>
-            <WelcomeDashboardHeading />
+            <WelcomeDashboardHeading heading={"Layanan Mudah Pendaftaran & Antrian Pasien Puskesmas (LAMDARANPUS)"} />
             <Navigation currentPage={"Verifikasi Akun"} isConfirm />
             {
                 showAlert && (
