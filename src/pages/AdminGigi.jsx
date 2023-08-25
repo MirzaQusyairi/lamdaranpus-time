@@ -3,7 +3,7 @@ import DashboardHeading from "../components/DashboardHeading";
 import CardStats from "../components/CardStats";
 import supabase from "../config/supabaseClient";
 import { useFormik } from "formik";
-import { TextInput, Alert, Table, Button } from "flowbite-react";
+import { TextInput, Alert, Table, Button, Select } from "flowbite-react";
 import search from "../assets/search.svg";
 import { useNavigate } from "react-router-dom";
 
@@ -42,9 +42,18 @@ function AdminPageGigi() {
       }
     },
   });
+
+  function formatDateToYYYYMMDD(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
   async function getQueue() {
     try {
-      const { data, error } = await supabase.from("queues").select("*");
+      const { data, error } = await supabase.from("queues").select("*").eq("queue_date", formatDateToYYYYMMDD(new Date()));
       if (error) throw error;
       if (data) {
         setUsers(data);
@@ -110,6 +119,24 @@ function AdminPageGigi() {
     }
   };
 
+  async function updateStatus(id, status, queue_date, queue_time) {
+    const { dataQueue, errorQueue } = await supabase
+      .from("queues")
+      .update({
+        status: status,
+      })
+      .eq("id", id);
+
+    const { data, error } = await supabase
+      .from("history")
+      .update({
+        status: status,
+      })
+      .eq("queue_date", queue_date).eq("queue_time", queue_time);
+
+    if (errorQueue) throw errorQueue;
+  }
+
   const pasienGigi =
     searchResults.length > 0
       ? searchResults.filter((user) => user.poli === "Poli Gigi")
@@ -169,17 +196,14 @@ function AdminPageGigi() {
         <CardStats namaPoli="Poli KIA" Link="/manage-queue-kia" />
         <CardStats namaPoli="Poli Gigi" Link="/manage-queue-gigi" />
       </div>
-      <div className="flex justify-end mx-20 mt-[46px]">
-        <Button color={"failure"} onClick={() => handleDropQueue("Poli Gigi")}>
-          Selesaikan Antrian
-        </Button>
-      </div>
+
       <div className="flex justify-center">
         <div className="w-[1370px] mt-[61px]">
           <Table>
             <Table.Head>
               <Table.HeadCell>Nama Pasien</Table.HeadCell>
               <Table.HeadCell>Nomor Antrian</Table.HeadCell>
+              <Table.HeadCell>TANGGAL | WAKTU</Table.HeadCell>
               <Table.HeadCell>POLI/JENIS POLI</Table.HeadCell>
               <Table.HeadCell>KATEGORI PASIEN</Table.HeadCell>
               <Table.HeadCell>STATUS</Table.HeadCell>
@@ -190,7 +214,7 @@ function AdminPageGigi() {
                 <Table.Row>
                   <Table.Cell>
                     <p className="font-inter font-bold text-black">
-                      Tidak ada Antrian pada Poli TB
+                      Tidak ada Antrian pada Poli Gigi
                     </p>
                   </Table.Cell>
                 </Table.Row>
@@ -214,6 +238,12 @@ function AdminPageGigi() {
 
                     <Table.Cell>
                       <p className="font-inter font-bold text-black">
+                        {new Date(user.queue_date).toLocaleDateString('es-CL',)} | {user.queue_time}
+                      </p>
+                    </Table.Cell>
+
+                    <Table.Cell>
+                      <p className="font-inter font-bold text-black">
                         {user.poli}
                       </p>
                     </Table.Cell>
@@ -224,7 +254,17 @@ function AdminPageGigi() {
                       </p>
                     </Table.Cell>
                     <Table.Cell>
-                      <p className="font-inter font-bold text-black">DALAM ANTRIAN</p>
+                      <Select
+                        as="select"
+                        id="poli"
+                        name="poli"
+                        // value={user.status}
+                        onChange={(e) => updateStatus(user.id, e.target.value, user.queue_date, user.queue_time)}
+                      >
+                        <option value="queued" selected={user.status == "queued"}>DALAM ANTRIAN</option>
+                        <option value="check" selected={user.status == "check"}>SEDANG DIPERIKSA</option>
+                        <option value="done" selected={user.status == "done"}>SELESAI BEROBAT</option>
+                      </Select>
                     </Table.Cell>
                     <Table.Cell>
                       <button

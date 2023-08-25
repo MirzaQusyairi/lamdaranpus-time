@@ -48,7 +48,10 @@ function OTPVerification() {
                 }
 
                 if (!error) {
-                    navigate('/additional-data')
+                    setShowAlert(true);
+                    setTimeout(() => {
+                        navigate("/login");
+                    }, 3000);
                 }
             } catch (error) {
                 setErrorAlert(true)
@@ -79,7 +82,7 @@ function OTPVerification() {
                             <span className="font-medium">
                                 {errorAlert ? 'Gagal!' : 'Berhasil!'}
                             </span>
-                            {' '} {errorAlert ? 'memverifikasi akun, silahkan isi kembali OTP' : 'mengkonfirmasi akun'}
+                            {' '} {errorAlert ? 'memverifikasi akun, silahkan isi kembali OTP' : 'verifikasi akun, anda akan diarahkan ke halaman login'}
                         </span>
                     </Alert>
 
@@ -115,7 +118,7 @@ function OTPVerification() {
                             type='submit'
                             className='mt-[20px] w-[700px]'
                             disabled={loading ? true : ''}>
-                            {loading ? 'Memuat...' : 'Selanjutnya'}
+                            {loading ? 'Diproses...' : 'Verifikasi OTP'}
                         </Button>
                     </form>
                 </div>

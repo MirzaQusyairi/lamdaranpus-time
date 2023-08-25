@@ -10,7 +10,7 @@ function AntrianSaya() {
 
     async function getQueue() {
         try {
-            const { data, error } = await supabase.from("queues").select("*");
+            const { data, error } = await supabase.from("queues").select("*").order("queue_date", { ascending: false });
             if (error) throw error;
             if (data) {
                 setAntrianPasien(data);
@@ -48,7 +48,7 @@ function AntrianSaya() {
                     {
                         pasien.length === 0 ? <AntrianSayaCard /> : (
                             pasien.map(user => (
-                                <AntrianSayaCard key={user.id} NomorAntrian={user.queue} JenisPoli={user.poli} NamaPasien={user.name} />
+                                <AntrianSayaCard key={user.id} NomorAntrian={user.queue} JenisPoli={user.poli} NamaPasien={user.name} Status={user.status} Tanggal={user.queue_date} />
                             ))
                         )
                     }

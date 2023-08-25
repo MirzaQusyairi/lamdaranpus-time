@@ -19,9 +19,18 @@ const QueueRegisterForUser = () => {
   const [isQueueExcedeed, setIsQueueExcedeed] = useState(false);
   const [timeSlot, setTimeSlot] = useState();
   const [queueNumber, setQueueNumber] = useState();
+  const [queueTime, setQueueTime] = useState();
+  const [queueDate, setQueueDate] = useState(formatDateToYYYYMMDD(new Date()));
   const [queueData, setQueueData] = useState([]);
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [availableQueueNumbers, setAvailableQueueNumbers] = useState([]);
+
+  const [maxDate, setMaxDate] = useState(() => {
+    const currentDate = new Date();
+    const maxDate = new Date(currentDate);
+    maxDate.setDate(maxDate.getDate() + 3);
+    return maxDate.toISOString().split('T')[0];
+  });
 
   async function getUserQueueNumber(poli) {
     const { data, error } = await supabase
@@ -41,11 +50,12 @@ const QueueRegisterForUser = () => {
     return queueNumber;
   }
 
-  async function getTimeSlot(poli) {
+  async function getTimeSlot(poli, queue_date) {
     const { data, error } = await supabase
       .from("queues")
       .select("queue")
-      .eq("poli", poli);
+      .eq("poli", poli)
+      .eq("queue_date", queue_date);
 
     if (error) throw error;
 
@@ -78,15 +88,6 @@ const QueueRegisterForUser = () => {
       return;
     }
 
-    if (existingQueues.length >= 2) {
-      setShowAlert(true);
-      setErrorAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-      return;
-    }
-
     const { data, error } = await supabase
       .from("users")
       .select("nik, phone")
@@ -100,6 +101,14 @@ const QueueRegisterForUser = () => {
     return { nik, phone };
   }
 
+  function formatDateToYYYYMMDD(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -111,6 +120,7 @@ const QueueRegisterForUser = () => {
       no_bpjs: "",
       jenis_poli_umum: "",
       timeSlot: "",
+      queue_date: formatDateToYYYYMMDD(new Date()),
     },
     validationSchema: Yup.object({
       poli: Yup.string().required("Poli harus diisi"),
@@ -151,11 +161,26 @@ const QueueRegisterForUser = () => {
 
       const { nik, phone } = await getUserKTP();
 
-      const { poli, category, no_bpjs, jenis_poli_umum } = values;
+      const { poli, queue_date, category, no_bpjs, jenis_poli_umum } = values;
+
+      const { data: userQueues, error: userQueuesError } =
+        await supabase.from("queues").select().eq("user_id", user_id);
 
       const { data: existingQueues, error: existingQueuesError } =
         await supabase.from("queues").select("id").eq("poli", poli);
 
+      if (userQueues) {
+        const sameDateQueue = userQueues.filter((user) => user.queue_date === queue_date);
+
+        if (sameDateQueue.length >= 1) {
+          setShowAlert(true);
+          setErrorAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 3000);
+          return;
+        }
+      }
       if (existingQueuesError) {
         setShowAlert(true);
         setErrorAlert(true);
@@ -184,6 +209,8 @@ const QueueRegisterForUser = () => {
             status: "queued",
             jenis_kelamin: userData.jenis_kelamin,
             queue: queueNumber,
+            queue_time: queueTime,
+            queue_date: queueDate,
             tgl_lahir: userData.tgl_lahir,
             category: category,
             no_bpjs: no_bpjs,
@@ -201,6 +228,8 @@ const QueueRegisterForUser = () => {
             status: "queued",
             jenis_kelamin: userData.jenis_kelamin,
             queue: queueNumber,
+            queue_time: queueTime,
+            queue_date: queueDate,
             tgl_lahir: userData.tgl_lahir,
             category: category,
             no_bpjs: no_bpjs,
@@ -211,6 +240,7 @@ const QueueRegisterForUser = () => {
         if (error) {
           setShowAlert(true);
           setErrorAlert(true);
+          console.log(error)
           setTimeout(() => {
             setShowAlert(false);
           }, 3000);
@@ -236,7 +266,7 @@ const QueueRegisterForUser = () => {
   useEffect(() => {
     async function fetchData() {
       const poli = formik.values.poli;
-      await getTimeSlot(poli);
+      await getTimeSlot(poli, formik.values.queue_date);
     }
 
     async function fetchUserData() {
@@ -260,7 +290,7 @@ const QueueRegisterForUser = () => {
     }
 
     fetchAllData();
-  }, [formik.values.poli]);
+  }, [formik.values.poli, formik.values.queue_date]);
 
   useEffect(() => {
     setTimeSlot(formik.values.timeSlot);
@@ -324,36 +354,47 @@ const QueueRegisterForUser = () => {
     switch (timeSlot) {
       case "08.00":
         setQueueNumber(1);
+        setQueueTime("08.00");
         break;
       case "08.20":
         setQueueNumber(2);
+        setQueueTime("08.20");
         break;
       case "08.40":
         setQueueNumber(3);
+        setQueueTime("08.40");
         break;
       case "09.00":
         setQueueNumber(4);
+        setQueueTime("09.00");
         break;
       case "09.20":
         setQueueNumber(5);
+        setQueueTime("09.20");
         break;
       case "09.40":
         setQueueNumber(6);
+        setQueueTime("09.40");
         break;
       case "10.00":
         setQueueNumber(7);
+        setQueueTime("10.00");
         break;
       case "10.20":
         setQueueNumber(8);
+        setQueueTime("10.20");
         break;
       case "10.40":
         setQueueNumber(9);
+        setQueueTime("10.40");
         break;
       case "11.00":
         setQueueNumber(10);
+        setQueueTime("11.00");
         break;
       case "11.20":
         setQueueNumber(11);
+        setQueueTime("11.20");
         break;
 
       default:
@@ -377,6 +418,12 @@ const QueueRegisterForUser = () => {
     e.persist();
     formik.handleChange(e);
     setSelectedPoli(e.target.value);
+  };
+
+  const handleDate = (e) => {
+    e.persist();
+    formik.handleChange(e);
+    setQueueDate(e.target.value);
   };
 
   return (
@@ -497,6 +544,27 @@ const QueueRegisterForUser = () => {
                   )}
                 </div>
               )}
+            </div>
+
+            <div>
+              <div className="block mb-2">
+                <Label
+                  htmlFor="queue_date"
+                  value="Pilih Tanggal"
+                  color={formik.errors.queue_date ? "failure" : ""}
+                />
+              </div>
+              <TextInput
+                id="queue_date"
+                name="queue_date"
+                type="date"
+                value={formik.values.queue_date}
+                onChange={handleDate}
+                color={formik.errors.queue_date ? "failure" : ""}
+                helperText={formik.errors.queue_date}
+                shadow={true}
+                max={maxDate}
+              />
             </div>
 
             {availableTimeSlots.length > 0 ? (

@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import { TextInput, Alert, Table, Button } from "flowbite-react";
 import search from "../assets/search.svg";
 import { useNavigate } from "react-router-dom";
+import generatePDF from "../services/reportGenerator";
 
 function AdminHistoryTB() {
   const [users, setUsers] = useState([]);
@@ -44,7 +45,7 @@ function AdminHistoryTB() {
 
   async function getQueue() {
     try {
-      const { data, error } = await supabase.from("history").select("*");
+      const { data, error } = await supabase.from("history").select("*").order('created_at', { ascending: false });
       if (error) throw error;
       if (data) {
         setUsers(data);
@@ -69,7 +70,7 @@ function AdminHistoryTB() {
           table: "queues",
         },
         (payload) => {
-          setUsers([...users, payload.new]);
+          setUsers([payload.new, ...users]);
         }
       )
       .subscribe();
@@ -172,11 +173,17 @@ function AdminHistoryTB() {
         <CardStats namaPoli="Poli KIA" Link="/histori-kia" />
         <CardStats namaPoli="Poli Gigi" Link="/histori-gigi" />
       </div>
+      <div className="flex justify-end mx-20 mt-[40px]">
+        <Button color={"success"} onClick={() => generatePDF(pasienTB, "Poli TB")}>
+          Cetak Laporan
+        </Button>
+      </div>
       <div className="flex justify-center">
-        <div className="w-[1370px] mt-[61px]">
+        <div className="w-[1370px] mt-[10px]">
           <Table>
             <Table.Head>
               <Table.HeadCell>Nama Pasien</Table.HeadCell>
+              <Table.HeadCell>TANGGAL | WAKTU</Table.HeadCell>
               <Table.HeadCell>POLI/JENIS POLI</Table.HeadCell>
               <Table.HeadCell>KATEGORI PASIEN</Table.HeadCell>
               <Table.HeadCell>STATUS</Table.HeadCell>
@@ -205,6 +212,12 @@ function AdminHistoryTB() {
 
                     <Table.Cell>
                       <p className="font-inter font-bold text-black">
+                        {new Date(user.queue_date).toLocaleDateString('es-CL',)} | {user.queue_time}
+                      </p>
+                    </Table.Cell>
+
+                    <Table.Cell>
+                      <p className="font-inter font-bold text-black">
                         {user.poli}
                       </p>
                     </Table.Cell>
@@ -215,10 +228,12 @@ function AdminHistoryTB() {
                       </p>
                     </Table.Cell>
                     <Table.Cell>
-                      <p className="font-inter font-bold text-black">SELESAI BEROBAT</p>
+                      <p className="font-inter font-bold text-black">
+                        {user.status == "done" ? "SELESAI BEROBAT" : "BELUM SELESAI"}
+                      </p>
                     </Table.Cell>
                     <Table.Cell>
-                      <button
+                      {/* <button
                         className="w-[93px] h-[29px] mt-[10px] rounded-[11px] bg-[#FC0404]"
                         type="button"
                         onClick={() => handleDone(user.id)}
@@ -226,7 +241,7 @@ function AdminHistoryTB() {
                         <p className="font-inter font-bold text-white text-[11px]">
                           SELESAIKAN
                         </p>
-                      </button>
+                      </button> */}
 
                       <button
                         className="w-[93px] h-[29px] mt-[10px] rounded-[11px] ml-[10px] bg-[#1565D8]"

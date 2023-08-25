@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 
-function AntrianSayaCard({ NomorAntrian, JenisPoli, NamaPasien }) {
+function getStatus(Status) {
+  if (Status === 'queued') {
+    return 'DALAM ANTRIAN'
+  } else if (Status === 'check') {
+    return 'SEDANG DIPERIKSA'
+  } else {
+    return 'SELESAI BEROBAT'
+  }
+}
+
+function AntrianSayaCard({ NomorAntrian, JenisPoli, NamaPasien, Status, Tanggal }) {
   const [jamPeriksa, setJamPeriksa] = useState();
   useEffect(() => {
     switch (NomorAntrian) {
@@ -50,7 +60,7 @@ function AntrianSayaCard({ NomorAntrian, JenisPoli, NamaPasien }) {
       </h1>
       {NomorAntrian && JenisPoli ? (
         <h1 className="font-inter font-bold mt-[6px] ml-[39px] text-[#08AD36]">
-          Dalam antrian
+          {getStatus(Status)}
         </h1>
       ) : (
         <h1 className="font-inter font-bold mt-[6px] ml-[39px] text-[#FF0000]">
@@ -64,20 +74,25 @@ function AntrianSayaCard({ NomorAntrian, JenisPoli, NamaPasien }) {
 
       {NomorAntrian && JenisPoli ? (
         <div className="flex ml-[64px] mt-[35px] gap-9">
-          <div className="mt-[12px]">
-            <h1 className="font-inter font-bold text-[20px]">ANTRIAN NOMOR</h1>
-            <p className="font-inter font-bold text-[14px] text-center mt-[5px]">
-              Atas Nama:
-            </p>
-            <p className="font-inter font-bold text-[14px] text-center mt-[5px]">
-              {NamaPasien}
-            </p>
-            <h1 className="font-inter font-bold text-[32px] text-center">
-              {NomorAntrian}
-            </h1>
+          <div className="mt-[12px]" style={{ maxWidth: '11rem' }}>
             <p className="font-inter font-bold text-[14px] text-center mt-[5px]">
               {JenisPoli}
             </p>
+            <p className="font-inter text-[14px] text-center mt-[5px]">
+              {new Date(Tanggal).toLocaleDateString('es-CL',)} | {jamPeriksa}
+            </p>
+            <p className="font-inter font-bold text-[14px] text-center mt-[5px]">
+
+            </p>
+            <h1 className="font-inter font-bold text-[20px] text-center">ANTRIAN NOMOR</h1>
+            <h1 className="font-inter font-bold text-[32px] text-center">
+              {NomorAntrian}
+            </h1>
+            <p className="font-inter text-[14px] text-center mt-[5px]">
+              Nama Pasien :
+              <br />{NamaPasien}
+            </p>
+
           </div>
           <div className="w-[366px] h-[172px] bg-white border border-gray-200 rounded-lg shadow-lg p-4">
             <h1 className="font-inter font-bold text-[15px]">

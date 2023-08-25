@@ -25,7 +25,6 @@ const Dashboard = () => {
     getQueue()
   }, [])
 
-
   async function getUserMetadata() {
     const {
       data: { user },
@@ -37,7 +36,7 @@ const Dashboard = () => {
 
   getUserMetadata()
 
-  const pasien = antrianPasien.filter((user) => user.user_id === pasienID)
+  const pasien = antrianPasien.filter((user) => user.user_id === pasienID && user.status !== 'done')
 
   return (
     <div className='mb-[100px]'>
@@ -46,7 +45,7 @@ const Dashboard = () => {
       {
         pasien.length === 0 ? <StatusPendaftaranCard /> : (
           pasien.map(user => (
-            <StatusPendaftaranCard key={user.id} NomorAntrian={user.queue} JenisPoli={user.poli} NamaPasien={user.name} />
+            <StatusPendaftaranCard key={user.id} NomorAntrian={user.queue} JenisPoli={user.poli} NamaPasien={user.name} Status={user.status} Tanggal={user.queue_date} Waktu={user.queue_time} />
           ))
         )
       }
