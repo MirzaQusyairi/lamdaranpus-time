@@ -34,6 +34,28 @@ const Dashboard = () => {
     setPasienID(userID)
   }
 
+  useEffect(() => {
+    const listener = supabase
+      .channel("any")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "queues",
+        },
+        (payload) => {
+          setAntrianPasien([payload.new]);
+        }
+      )
+      .subscribe();
+
+    // subscription cleanup
+    return () => {
+      supabase.removeChannel(listener);
+    };
+  }, []);
+
   getUserMetadata()
 
   const pasien = antrianPasien.filter((user) => user.user_id === pasienID && user.status !== 'done')

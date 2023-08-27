@@ -43,7 +43,7 @@ function AntrianSaya() {
             <DashboardHeading linkTo="/welcome" heading="Layanan Mudah Pendaftaran & Antrian Pasien Puskesmas (LAMDARANPUS)" />
             <div className='flex justify-center mt-[50px]'>
                 <div>
-                    <h1 className='font-inter font-bold text-[30px] text-black'>Antrian Saya</h1>
+                    <h1 className='font-inter font-bold text-[30px] text-black'>Riwayat Saya</h1>
                     <hr className='mt-2 w-[700px]' />
                     {
                         pasien.length === 0 ? <AntrianSayaCard /> : (

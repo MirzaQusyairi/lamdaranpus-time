@@ -334,6 +334,8 @@ const QueueRegisterForUser = () => {
 
     //   if (currentFormattedTime < "07.00") {
     //     availableSlots = availableQueueNumbers.map((queueNumber) => timeSlots[queueNumber]);
+    //   } else if (formik.values.queue_date !== formatDateToYYYYMMDD(new Date())) {
+    //     availableSlots = availableQueueNumbers.map((queueNumber) => timeSlots[queueNumber]);
     //   } else {
     //     availableSlots = availableQueueNumbers
     //       .filter((queueNumber) => timeSlots[queueNumber] > currentFormattedTime)

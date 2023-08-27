@@ -232,7 +232,9 @@ function AdminHistoryGigi() {
                       </p>
                     </Table.Cell>
                     <Table.Cell>
-                      <p className="font-inter font-bold text-black">SELESAI BEROBAT</p>
+                      <p className="font-inter font-bold text-black">
+                        {user.status == "done" ? "SELESAI BEROBAT" : "BELUM SELESAI"}
+                      </p>
                     </Table.Cell>
                     <Table.Cell>
                       {/* <button
