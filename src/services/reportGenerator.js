@@ -35,7 +35,6 @@ const generatePDF = (patients, poli) => {
   var width = doc.internal.pageSize.getWidth()
   const date = Date().split(" ");
   // we use a date string to generate our filename.
-  console.log(date);
   const dateStr = date[0] + date[2] + date[1] + date[3] + date[4];
   // patient title. and margin-top + margin-left
   doc.text("Data Pasien " + poli, width / 2, 15, { align: "center" });

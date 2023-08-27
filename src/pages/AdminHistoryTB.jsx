@@ -22,6 +22,7 @@ function AdminHistoryTB() {
   const formik = useFormik({
     initialValues: {
       searchValue: "",
+      reportDate: "",
     },
     onSubmit: async (values) => {
       try {
@@ -120,6 +121,10 @@ function AdminHistoryTB() {
       ? searchResults.filter((user) => user.poli === "Poli TB")
       : users.filter((user) => user.poli === "Poli TB");
 
+  const DataPasienTB =
+    formik.values.reportDate !== ""
+      ? users.filter((user) => user.poli === "Poli TB" && user.queue_date === formik.values.reportDate) : users.filter((user) => user.poli === "Poli TB");
+
   return (
     <div className="mb-[100px]">
       <DashboardHeading heading="Halaman Admin Layanan Mudah Pendaftaran & Antrian Puskesmas (LAMDARANPUS)" linkTo="/welcome" />
@@ -174,7 +179,16 @@ function AdminHistoryTB() {
         <CardStats namaPoli="Poli Gigi" Link="/histori-gigi" />
       </div>
       <div className="flex justify-end mx-20 mt-[40px]">
-        <Button color={"success"} onClick={() => generatePDF(pasienTB, "Poli TB")}>
+        <div className="mr-2">
+          <TextInput
+            id="reportDate"
+            name="reportDate"
+            type="date"
+            onChange={formik.handleChange}
+            shadow={true}
+          />
+        </div>
+        <Button color={"success"} onClick={() => generatePDF(DataPasienTB, "Poli TB")}>
           Cetak Laporan
         </Button>
       </div>

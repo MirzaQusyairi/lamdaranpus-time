@@ -22,6 +22,7 @@ function AdminHistoryKIA() {
   const formik = useFormik({
     initialValues: {
       searchValue: "",
+      reportDate: "",
     },
     onSubmit: async (values) => {
       try {
@@ -124,6 +125,10 @@ function AdminHistoryKIA() {
       )
       : users.filter((user) => user.poli === "Poli Kesehatan Ibu dan Anak");
 
+  const DataPasienKIA =
+    formik.values.reportDate !== ""
+      ? users.filter((user) => user.poli === "Poli Kesehatan Ibu dan Anak" && user.queue_date === formik.values.reportDate) : users.filter((user) => user.poli === "Poli Kesehatan Ibu dan Anak");
+
   return (
     <div className="mb-[100px]">
       <DashboardHeading heading="Halaman Admin Layanan Mudah Pendaftaran & Antrian Puskesmas (LAMDARANPUS)" linkTo="/welcome" />
@@ -180,7 +185,16 @@ function AdminHistoryKIA() {
         <CardStats namaPoli="Poli Gigi" Link="/histori-gigi" />
       </div>
       <div className="flex justify-end mx-20 mt-[40px]">
-        <Button color={"success"} onClick={() => generatePDF(pasienKIA, "Poli Kesehatan Ibu dan Anak ")}>
+        <div className="mr-2">
+          <TextInput
+            id="reportDate"
+            name="reportDate"
+            type="date"
+            onChange={formik.handleChange}
+            shadow={true}
+          />
+        </div>
+        <Button color={"success"} onClick={() => generatePDF(DataPasienKIA, "Poli Kesehatan Ibu dan Anak ")}>
           Cetak Laporan
         </Button>
       </div>
